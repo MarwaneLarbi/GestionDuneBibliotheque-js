@@ -1,0 +1,323 @@
+<!DOCTYPE HTML>
+
+<!--
+******************************
+Name:        Marwane Larbi
+Groupe :     G3
+******************************
+-->
+<html>
+<head>
+	<title>Manipulation de la DOM HTML avec JavaScript</title>
+	<meta charset="UTF-8">
+</head>
+
+<script>
+	function livre_existe(titre_livre){
+		var ligne_courante = document.getElementById("details_livres").firstElementChild.firstElementChild.nextElementSibling;
+		while(ligne_courante != null && ligne_courante.firstElementChild.textContent != titre_livre){
+			ligne_courante = ligne_courante.nextElementSibling;
+		}
+		if(ligne_courante == null){
+			return false;
+		} else {
+			return true;
+		}
+	}
+
+	function ajouter_livre(){
+
+		var titre_livre=prompt("le titre du livre à ajouter");
+		if (livre_existe(titre_livre)){
+			alert("le livre est deja exister");
+		}
+		else {
+		var nom_auteur=prompt("Entrer le nom de  l’auteur ");
+		var ca_livre=prompt("Entrer la catégorie de livre");
+		var ne_livre=prompt("Entrer le nombre d’exemplaires du nouveau livre");
+		ne_livre=parseInt(ne_livre);
+		if(nom_auteur==null || ca_livre==null || ne_livre==null || isNaN(ne_livre) ||(! (isNaN(nom_auteur)))){
+			//
+		  alert("information incorrect");
+		}
+		else {
+		var nouvelle_ligne=document.createElement("tr");
+		nouvelle_ligne.innerHTML="<td>"+titre_livre+"</td>"+"<td>"+nom_auteur+"</td>"+"<td>"+ca_livre+"</td>"+"<td>"+0+"</td>"+"<td>"+ne_livre+"</td>";
+		document.getElementById("details_livres").firstElementChild.appendChild(nouvelle_ligne);
+}
+
+		}
+
+inventaire() ;
+	}
+
+	function inventaire(){
+	var	tous_livres = 0;
+	var 	livres_empruntes = 0;
+		var ligne_courante = document.getElementById("details_livres").firstElementChild.firstElementChild.nextElementSibling;
+
+		while(ligne_courante!=null)
+		{
+			var tmp = ligne_courante.firstElementChild.nextElementSibling.nextElementSibling.nextElementSibling.textContent;
+			tmp = parseInt(tmp);
+			var tmp1 = ligne_courante.firstElementChild.nextElementSibling.nextElementSibling.nextElementSibling.nextElementSibling.textContent;
+			tmp1 = parseInt(tmp1);
+			tous_livres = tous_livres + tmp1;
+			livres_empruntes = livres_empruntes+tmp;
+			ligne_courante = ligne_courante.nextElementSibling;
+		}
+
+		document.getElementById("tous_livres").textContent=tous_livres;
+		document.getElementById("livres_empruntes").textContent=livres_empruntes;
+	}
+
+	function supprimer_livre(){
+		var titre_livre_a_supprimer=prompt("le titre du livre à supprimer");
+
+		if (!livre_existe(titre_livre_a_supprimer)){
+			alert("le livre n'est pas exister");
+		}
+		else {
+			var ligne_courante= document.getElementById("details_livres").firstElementChild.firstElementChild.nextElementSibling;
+			while(ligne_courante.firstElementChild.textContent !=titre_livre_a_supprimer){
+				ligne_courante = ligne_courante.nextElementSibling;
+			}
+
+			if (ligne_courante.firstElementChild.nextElementSibling.nextElementSibling.nextElementSibling.textContent!=0) {
+				alert("Erreur : Impossible de supprimer un livre déjà emprunté");
+			}
+			else {
+					ligne_courante.parentNode.removeChild(ligne_courante);
+			}
+		}
+		inventaire() ;
+
+
+	}
+	function pret_existe(titre_livre,nom_etudiant){
+		var tmp = document.getElementById("livres_empruntes").textContent ;
+		tmp = parseInt(tmp);
+		if (tmp == 0){
+			return false;
+		}
+		else {
+			var ligne_courante = document.getElementById("details_prets").firstElementChild.firstElementChild.nextElementSibling;
+
+			while (ligne_courante != null   ) {
+				if (ligne_courante.firstElementChild.textContent == titre_livre) {
+					 if (ligne_courante.firstElementChild.nextElementSibling.textContent ==nom_etudiant) {
+					 	return true;
+					 }
+					 else {
+					 	ligne_courante = ligne_courante.nextElementSibling;
+					 }
+				}
+				else {
+					ligne_courante = ligne_courante.nextElementSibling;
+
+				}
+			}
+			return false ;
+
+
+
+		}
+	}
+
+	function emprunter_livre(){
+		var titre_livre=prompt("saisir le titre du livre");
+		if (!livre_existe(titre_livre)) {
+				alert("le livre n'exister pas ");
+		}
+		var ligne_courante = document.getElementById("details_livres").firstElementChild.firstElementChild.nextElementSibling;
+		while(ligne_courante != null && ligne_courante.firstElementChild.textContent != titre_livre){
+			ligne_courante = ligne_courante.nextElementSibling;
+		}
+				var tmp = ligne_courante.firstElementChild.nextElementSibling.nextElementSibling.nextElementSibling.textContent;
+				tmp = parseInt(tmp);
+				var tmp2 = ligne_courante.firstElementChild.nextElementSibling.nextElementSibling.nextElementSibling.nextElementSibling.textContent;
+				tmp2 = parseInt(tmp2);
+
+		if (!livre_existe(titre_livre)) {
+				alert("le livre n'exister pas ");
+		}
+		else if (tmp>=tmp2) {
+			alert("pas d’exemplaire disponibl");
+		}
+		else {
+			// Name:        Marwane Larbi
+			var nom_etudiant=prompt("entrez le nom d'etudiant");
+			if (pret_existe(titre_livre,nom_etudiant)) {
+				alert("prets deja exister ");
+			}
+	     else {
+				var ligne_courante = document.getElementById("details_livres").firstElementChild.firstElementChild.nextElementSibling;
+						if( ligne_courante.firstElementChild.textContent== ligne_courante.firstElementChild.nextElementSibling.textContent)
+						{
+							alert("Erreur : pas d’exemplaire disponible");
+						}
+						else {
+							var ligne_courante = document.getElementById("details_livres").firstElementChild.firstElementChild.nextElementSibling;
+
+							while(ligne_courante != null && ligne_courante.firstElementChild.textContent != titre_livre){
+								ligne_courante = ligne_courante.nextElementSibling;
+							}
+
+							ligne_courante.firstElementChild.nextElementSibling.nextElementSibling.nextElementSibling.textContent=tmp+1;
+							var nouvelle_ligne=document.createElement("tr");
+							nouvelle_ligne.innerHTML="<td>"+titre_livre+"</td>"+"<td>"+nom_etudiant+"</td>";
+							document.getElementById("details_prets").firstElementChild.appendChild(nouvelle_ligne);
+							inventaire() ;
+
+			}}
+		}
+}
+
+	function restituer_livre(){
+		var titre_livre=prompt("le titre du livre à restituer");
+		var nom_etudiant=prompt("le nom d'etudiant");
+if (!pret_existe(titre_livre, nom_etudiant)) {
+
+		alert("votre demande est incorrect");
+
+}
+else {
+	var ligne_courante = document.getElementById("details_prets").firstElementChild.firstElementChild.nextElementSibling;
+	while ( ligne_courante != null  ) {
+
+		if (ligne_courante.firstElementChild.textContent== titre_livre) {
+			if (ligne_courante.firstElementChild.nextElementSibling.textContent == nom_etudiant) {
+				break ;
+			}
+			else {
+				ligne_courante = ligne_courante.nextElementSibling;
+			}
+		}
+			else {
+				ligne_courante = ligne_courante.nextElementSibling;
+			}
+	}
+	ligne_courante.parentNode.removeChild(ligne_courante);
+	var ligne_courante2 = document.getElementById("details_livres").firstElementChild.firstElementChild.nextElementSibling;
+	while(ligne_courante2 != null && ligne_courante2.firstElementChild.textContent != titre_livre){
+		ligne_courante2 = ligne_courante2.nextElementSibling;
+		}
+	var tmp = ligne_courante2.firstElementChild.nextElementSibling.nextElementSibling.nextElementSibling.textContent;
+	tmp = parseInt(tmp);
+ ligne_courante2.firstElementChild.nextElementSibling.nextElementSibling.nextElementSibling.textContent=tmp-1;
+}
+inventaire() ;
+	}
+</script>
+<style>
+	body {
+		background-image:url('book.jpg'); background-size: 100% 100%; background-repeat:no-repeat;
+	}
+	h1 {
+		font-style: italic;
+		text-shadow: 2px 2px 3px blue;
+	}
+	div {
+		border-style:solid; border-color:blue; border-radius:10px; width:100%;
+	}
+	fieldset {
+		border-style:solid; border-color:blue; border-radius:10px;
+	}
+	#entete_1, #entete_2 {
+		background-color:#2ECCFA; font-size:20px; color:white; border-radius:50px;
+	}
+	table {
+		width:100%; text-align:center; color:blue; font-weight:bold;
+	}
+	legend {
+		font-size:20px; font-weight:bold;
+	}
+	input[type="button"] {
+		background-color:#2ECCFA; font-size:16px; color:white; border-radius:15px; line-height:25px; cursor:pointer;
+	}
+</style>
+
+<body>
+	<center>
+	<div>
+		<h1 align="center">Bibliothèque du département d'Informatique</h1>
+		<table>
+			<tr>
+				<td width="70%">
+					<fieldset style="height:200px; overflow-y:scroll;">
+						<legend align="left">Détails des livres</legend>
+						<table id="details_livres">
+							<tr id="entete_1">
+								<th style="border-top-left-radius:15px">Titre</th>
+								<th>Auteur</th>
+								<th>Catégorie</th>
+								<th>Exemplaires empruntés</th>
+								<th style="border-top-right-radius:15px">Tous les exemplaires</th>
+							</tr>
+							<tr>
+								<td>HTML 5</td>
+								<td>Rodolphe Rimelé</td>
+								<td>Programmation Web</td>
+								<td>0</td>
+								<td>5</td>
+							</tr>
+						</table>
+					</fieldset>
+				</td>
+				<td width="30%">
+					<fieldset style="height:200px; overflow-y:scroll; align:left">
+						<legend align="left">Détails des prêts</legend>
+						<table id="details_prets">
+							<tr id="entete_2">
+								<th style="border-top-left-radius:15px">Titre</th>
+								<th style="border-top-right-radius:15px">Nom de l'étudiant</th>
+							</tr>
+						</table>
+					</fieldset>
+				</td>
+			</tr>
+		</table>
+		<br>
+		<table>
+			<tr>
+				<td>
+					<fieldset>
+						<legend align="center">Gérer les livres</legend>
+						<input type="button" value="Ajouter un livre" onclick="ajouter_livre();">
+						<input type="button" value="Supprimer un livre" onclick="supprimer_livre();">
+					</fieldset>
+				</td>
+				<td>
+					<fieldset>
+						<legend align="center">Gérer les prêts</legend>
+						<input type="button" value="Emprunter un livre" onclick="emprunter_livre();">
+						<input type="button" value="Restituer un livre" onclick="restituer_livre();">
+					</fieldset>
+				</td>
+			</tr>
+		</table>
+		<div align="right" style="border-color:white; border-width:0.1px">
+			<fieldset style="width:25%;align:right;color:blue" align="left">
+				<legend>Inventaire</legend>
+				<table align="right" style="font-weight:bold">
+					<tr>
+						<td align="left">Tous les livres</td>
+						<td id="tous_livres">5</td>
+					</tr>
+					<tr>
+						<td align="left">Livres empruntés</td>
+						<td id="livres_empruntes">0</td>
+					</tr>
+				</table>
+			</fieldset>
+		</div>
+	</div>
+	</center>
+</body>
+<!--
+******************************
+Name:        Marwane Larbi
+Groupe :     G3
+******************************
+-->
+</html>
